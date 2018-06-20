@@ -2,7 +2,7 @@ import * as Three from 'three'
 import ParticleMap from './ParticleMap'
 
 export default class App {
-  constructor() {
+  constructor () {
     const size = 512
     const geometry = new Three.PlaneGeometry(size, size)
     const material = new Three.MeshBasicMaterial()
@@ -12,11 +12,11 @@ export default class App {
     material.map = this.particleMap.renderTarget.texture
   }
 
-  render(renderer) {
+  render (renderer) {
     this.particleMap.render(renderer)
   }
 
-  get mesh() {
+  get mesh () {
     return this.appMesh
   }
 }

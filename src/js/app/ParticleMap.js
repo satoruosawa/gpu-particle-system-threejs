@@ -1,12 +1,12 @@
 import * as Three from 'three'
 
 export default class ParticleMap {
-  constructor(size) {
+  constructor (size) {
     this.bufScene = new Three.Scene()
     const geometry = new Three.PlaneGeometry(size, size)
     this.uniforms = {
       prevTexture: { type: 't', value: null },
-      textureSize: { type: 'f', value: size },
+      textureSize: { type: 'f', value: size }
     }
     const shaderMaterial = this.allocShader()
     const mesh = new Three.Mesh(geometry, shaderMaterial)
@@ -19,32 +19,32 @@ export default class ParticleMap {
     this.renderTargetIndex = 0
   }
 
-  allocShader() {
+  allocShader () {
     return new Three.ShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: document.getElementById( 'vertexShader' ).textContent,
-      fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+      vertexShader: document.getElementById('vertexShader').textContent,
+      fragmentShader: document.getElementById('fragmentShader').textContent
     })
   }
 
-  render(renderer) {
+  render (renderer) {
     this.updateUniforms()
     this.shiftRenderTarget()
     renderer.render(this.bufScene, this.bufCamera, this.renderTarget)
   }
 
-  updateUniforms() {
+  updateUniforms () {
     this.uniforms.prevTexture.value = this.renderTarget.texture
   }
 
-  shiftRenderTarget() {
+  shiftRenderTarget () {
     this.renderTargetIndex++
     if (this.renderTargetIndex >= this.numRenderTargets) {
       this.renderTargetIndex = 0
     }
   }
 
-  get renderTarget() {
+  get renderTarget () {
     return this.renderTargetArray[this.renderTargetIndex]
   }
 }
