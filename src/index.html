@@ -6,5 +6,16 @@
   </head>
   <body>
     <div id="root"></div>
+		<script id="vertexShader" type="x-shader/x-vertex">
+      void main() {
+        gl_Position = vec4(position, 1.0);
+      }
+		</script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
+      void main() {
+        gl_FragColor = vec4(vec3(0.5), 1.0);
+      }
+		</script>
+
   </body>
 </html>

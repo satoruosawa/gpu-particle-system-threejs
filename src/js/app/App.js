@@ -1,15 +1,19 @@
 import * as Three from 'three'
+import ParticleMap from './ParticleMap'
 
 export default class App {
   constructor() {
-    const geometry = new Three.BoxGeometry(100, 100, 100)
-    const material = new Three.MeshBasicMaterial({ color: 0x00ff00 })
+    const size = 512
+    const geometry = new Three.PlaneGeometry(size, size)
+    const material = new Three.MeshBasicMaterial()
     this.appMesh = new Three.Mesh(geometry, material)
+
+    this.particleMap = new ParticleMap(size)
+    material.map = this.particleMap.renderTarget.texture
   }
 
   render(renderer) {
-    this.appMesh.rotation.x += 0.1
-    this.appMesh.rotation.y += 0.1
+    this.particleMap.render(renderer)
   }
 
   get mesh() {
