@@ -2,8 +2,12 @@ uniform sampler2D prevTexture;
 uniform int textureSize;
 
 void main() {
-  vec4 prevColor = texture2D(prevTexture,
+  vec4 data = texture2D(prevTexture,
     floor(gl_FragCoord.xy) / float(textureSize));
-  prevColor.rgb = prevColor.rgb + 0.01;
-  gl_FragColor = vec4(prevColor.rgb, 1.0);
+
+  vec2 position = data.xy;
+  vec2 velocity = data.zw;
+  position += velocity;
+
+  gl_FragColor = vec4(position, velocity);
 }

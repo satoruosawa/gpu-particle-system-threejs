@@ -1,5 +1,6 @@
 import * as Three from 'three'
 import ParticleModel from './ParticleModel'
+import ParticleView from './ParticleView'
 
 export default class App {
   constructor () {
@@ -9,11 +10,13 @@ export default class App {
     this.appMesh = new Three.Mesh(geometry, material)
 
     this.particleModel = new ParticleModel(size)
-    material.map = this.particleModel.renderTarget.texture
+    this.particleView = new ParticleView(size, this.particleModel)
+    material.map = this.particleView.texture
   }
 
   render (renderer) {
     this.particleModel.render(renderer)
+    this.particleView.render(renderer)
   }
 
   get mesh () {

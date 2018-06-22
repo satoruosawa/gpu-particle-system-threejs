@@ -7,7 +7,7 @@ export default class ParticleModel {
   constructor (size) {
     this.size = size
     this.bufScene = new Three.Scene()
-    const geometry = new Three.PlaneGeometry(size, size)
+    const geometry = new Three.PlaneBufferGeometry(size, size)
     this.uniforms = {
       prevTexture: { type: 't', value: null },
       textureSize: { type: 'i', value: size }
@@ -30,6 +30,7 @@ export default class ParticleModel {
       {
         minFilter: Three.NearestFilter,
         magFilter: Three.NearestFilter,
+        type: Three.FloatType
       })
   }
 
@@ -45,11 +46,13 @@ export default class ParticleModel {
     const data = new Float32Array(this.size * this.size * 4)
     for (let i = 0; i < this.size * this.size; i++) {
       const index = i * 4
-      data[index] = 0  // r
-      data[index + 1] = 0  // g
-      data[index + 2] = 0  // b
-      data[index + 3] = 0  // a
+      data[index] = 0 // red
+      data[index + 1] = 0 // green
+      data[index + 2] = 0 // blue
+      data[index + 3] = 0 // alpha
     }
+    data[0] = 0
+    data[2] = 0.002
     const texture = new Three.DataTexture(data, this.size,
       this.size, Three.RGBAFormat, Three.FloatType)
     texture.needsUpdate = true
@@ -75,5 +78,17 @@ export default class ParticleModel {
 
   get renderTarget () {
     return this.renderTargetArray[this.renderTargetIndex]
+  }
+
+  get texture () {
+    return this.renderTarget.texture
+  }
+
+  get textureSize () {
+    return this.size
+  }
+
+  get numParticles () {
+    return 1
   }
 }

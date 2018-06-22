@@ -19,7 +19,9 @@ const renderer = new Three.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
-console.log(renderer.getContext().getSupportedExtensions())
+if (!renderer.getContext().getExtension('OES_texture_float')) {
+  window.alert('The WebGL implementation must support the respective extensions OES_texture_float')
+}
 
 // app
 const app = new App()
