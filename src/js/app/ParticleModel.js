@@ -42,7 +42,7 @@ export default class ParticleModel {
   }
 
   allocateDataTexture () {
-    const data = new Uint8Array(this.size * this.size * 4)
+    const data = new Float32Array(this.size * this.size * 4)
     for (let i = 0; i < this.size * this.size; i++) {
       const index = i * 4
       data[index] = 0  // r
@@ -51,7 +51,7 @@ export default class ParticleModel {
       data[index + 3] = 0  // a
     }
     const texture = new Three.DataTexture(data, this.size,
-      this.size, Three.RGBAFormat, Three.UnsignedByteType)
+      this.size, Three.RGBAFormat, Three.FloatType)
     texture.needsUpdate = true
     return texture
   }
