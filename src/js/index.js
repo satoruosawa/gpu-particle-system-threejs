@@ -19,6 +19,8 @@ const renderer = new Three.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
+console.log(renderer.getContext().getSupportedExtensions())
+
 // app
 const app = new App()
 scene.add(app.mesh)

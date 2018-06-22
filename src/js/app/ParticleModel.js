@@ -50,7 +50,6 @@ export default class ParticleModel {
       data[index + 2] = 0  // b
       data[index + 3] = 0  // a
     }
-    data[0] = 255
     const texture = new Three.DataTexture(data, this.size,
       this.size, Three.RGBAFormat, Three.UnsignedByteType)
     texture.needsUpdate = true
