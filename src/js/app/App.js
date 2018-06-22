@@ -1,5 +1,5 @@
 import * as Three from 'three'
-import ParticleMap from './ParticleMap'
+import ParticleModel from './ParticleModel'
 
 export default class App {
   constructor () {
@@ -8,12 +8,12 @@ export default class App {
     const material = new Three.MeshBasicMaterial()
     this.appMesh = new Three.Mesh(geometry, material)
 
-    this.particleMap = new ParticleMap(size)
-    material.map = this.particleMap.renderTarget.texture
+    this.particleModel = new ParticleModel(size)
+    material.map = this.particleModel.renderTarget.texture
   }
 
   render (renderer) {
-    this.particleMap.render(renderer)
+    this.particleModel.render(renderer)
   }
 
   get mesh () {

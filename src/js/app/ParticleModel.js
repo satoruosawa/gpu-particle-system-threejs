@@ -1,6 +1,6 @@
 import * as Three from 'three'
 
-export default class ParticleMap {
+export default class ParticleModel {
   constructor (size) {
     this.bufScene = new Three.Scene()
     const geometry = new Three.PlaneGeometry(size, size)
