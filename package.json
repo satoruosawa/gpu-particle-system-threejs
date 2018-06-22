@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --mode development",
     "build": "webpack --mode production",
-    "lint": "standard src/**/*.js"
+    "lint": "standard \"src/**/*.js\""
   },
   "repository": {
     "type": "git",

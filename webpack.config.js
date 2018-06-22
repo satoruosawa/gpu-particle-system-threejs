@@ -1,23 +1,24 @@
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const path = require('path')
 
 module.exports = {
-  devtool: 'source-map',  // enhance debugging
+  devtool: 'source-map', // enhance debugging
   entry: {
     main: [
       'babel-polyfill',
-      './src/js/index.js'
+      path.resolve(__dirname, 'src/js/index.js')
     ]
   },
   output: {
-    path: __dirname + '/dist',
+    path: path.resolve(__dirname, 'dist'),
     filename: 'main.js'
   },
   module: {
     rules: [{
       test: /\.js$/,
       exclude: /node_modules/,
-      loader: "babel-loader"
+      loader: 'babel-loader'
     }, {
       test: /\.scss$/,
       use: [
@@ -25,13 +26,13 @@ module.exports = {
         {
           loader: 'css-loader',
           options: {
-            sourceMap: true,
-          },
+            sourceMap: true
+          }
         },
         {
           loader: 'sass-loader',
           options: {
-            sourceMap: true,
+            sourceMap: true
           }
         }
       ]
@@ -39,14 +40,14 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(['dist'], {
-      root: __dirname
+      root: path.resolve(__dirname)
     }),
     new HtmlWebpackPlugin({
-      template: __dirname + '/src/index.html',
+      template: path.resolve(__dirname, 'src/index.html')
     })
   ],
   devServer: {
-    contentBase: __dirname + '/dist',
+    contentBase: path.resolve(__dirname, 'dist'),
     host: '0.0.0.0',
     port: 5000
   }
