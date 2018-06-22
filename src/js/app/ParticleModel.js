@@ -1,5 +1,8 @@
 import * as Three from 'three'
 
+import vertexShader from '../../shader/particle-model-vertex.glsl'
+import fragmentShader from '../../shader/particle-model-fragment.glsl'
+
 export default class ParticleModel {
   constructor (size) {
     this.bufScene = new Three.Scene()
@@ -22,8 +25,8 @@ export default class ParticleModel {
   allocShader () {
     return new Three.ShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: document.getElementById('vertexShader').textContent,
-      fragmentShader: document.getElementById('fragmentShader').textContent
+      vertexShader,
+      fragmentShader
     })
   }
 

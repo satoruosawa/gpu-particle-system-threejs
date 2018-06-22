@@ -16,6 +16,15 @@ module.exports = {
   },
   module: {
     rules: [{
+      test: /\.glsl$/,
+      exclude: /node_modules/,
+      loader: 'raw-loader'
+    },
+    {
+      test: /\.glsl$/,
+      exclude: /node_modules/,
+      loader: 'glslify-loader'
+    }, {
       test: /\.js$/,
       exclude: /node_modules/,
       loader: 'babel-loader'
