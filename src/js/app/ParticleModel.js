@@ -1,42 +1,18 @@
 import * as Three from 'three'
 
+import TexturePass from './TexturePass'
 import vertexShader from '../../shader/particle-model-vertex.glsl'
 import fragmentShader from '../../shader/particle-model-fragment.glsl'
 
-export default class ParticleModel {
+export default class ParticleModel extends TexturePass {
   constructor (textureSize) {
-    this.textureSize = textureSize
-    const geometry = new Three.PlaneBufferGeometry(textureSize, textureSize)
-    this.uniforms_ = {
+    const uniforms = {
       prevTexture: { type: 't', value: null },
       textureSize: { type: 'i', value: textureSize }
     }
-    const shader = {
-      uniforms: this.uniforms_,
-      vertexShader,
-      fragmentShader
-    }
-    const shaderMaterial = new Three.ShaderMaterial(shader)
-    const mesh = new Three.Mesh(geometry, shaderMaterial)
-    this.bufScene_ = new Three.Scene()
-    this.bufScene_.add(mesh)
-    this.bufCamera_ = new Three.Camera()
-    this.numRenderTargets_ = 2
-    this.renderTargetArray_ = []
-    this.renderTargetArray_[0] = this.allocateRenderTarget(textureSize)
-    this.renderTargetArray_[1] = this.allocateRenderTarget(textureSize)
-    this.renderTargetIndex_ = 0
-
-    this.uniforms_.prevTexture.value = this.allocateDataTexture(textureSize)
-  }
-
-  allocateRenderTarget (textureSize) {
-    return new Three.WebGLRenderTarget(textureSize, textureSize,
-      {
-        minFilter: Three.NearestFilter,
-        magFilter: Three.NearestFilter,
-        type: Three.FloatType
-      })
+    const shader = { uniforms, vertexShader, fragmentShader }
+    super(textureSize, shader, { isMultipleRenderTargets: true })
+    uniforms.prevTexture.value = this.allocateDataTexture(textureSize)
   }
 
   allocateDataTexture (textureSize) {
@@ -58,28 +34,14 @@ export default class ParticleModel {
   }
 
   render (renderer) {
-    this.shiftRenderTarget()
-    renderer.render(this.bufScene_, this.bufCamera_, this.renderTarget_)
+    super.shiftRenderTarget()
+    super.render(renderer)
     this.updateUniforms()
   }
 
   updateUniforms () {
-    this.uniforms_.prevTexture.value = this.renderTarget_.texture
-  }
-
-  shiftRenderTarget () {
-    this.renderTargetIndex_++
-    if (this.renderTargetIndex_ >= this.numRenderTargets_) {
-      this.renderTargetIndex_ = 0
-    }
-  }
-
-  get renderTarget_ () {
-    return this.renderTargetArray_[this.renderTargetIndex_]
-  }
-
-  get texture () {
-    return this.renderTarget_.texture
+    const uniforms = this.shaderMaterial_.uniforms
+    uniforms.prevTexture.value = this.texture
   }
 
   get numParticles () {

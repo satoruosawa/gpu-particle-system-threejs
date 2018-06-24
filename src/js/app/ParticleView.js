@@ -1,37 +1,22 @@
 import * as Three from 'three'
 
+import TexturePass from './TexturePass'
 import vertexShader from '../../shader/particle-view-vertex.glsl'
 import fragmentShader from '../../shader/particle-view-fragment.glsl'
 
-export default class ParticleView {
+export default class ParticleView extends TexturePass {
   constructor (textureSize, particleModel) {
-    this.bufScene_ = new Three.Scene()
-    this.bufCamera_ = new Three.Camera()
-    this.uniforms_ = {
+    const uniforms = {
       particleTexture: { type: 't', value: particleModel.texture },
       particleTextureSize: { type: 'i', value: particleModel.textureSize }
     }
-    const shader = {
-      uniforms: this.uniforms_,
-      vertexShader,
-      fragmentShader
-    }
-    this.shaderMaterial_ = new Three.ShaderMaterial(shader)
+    const shader = { uniforms, vertexShader, fragmentShader }
+    super(textureSize, shader)
     this.particleModel_ = particleModel
-    this.allocateParticles()
-
-    this.renderTarget_ = this.allocateRenderTarget(textureSize)
+    this.overwriteParticleScene()
   }
 
-  allocateRenderTarget (textureSize) {
-    return new Three.WebGLRenderTarget(textureSize, textureSize, {
-      minFilter: Three.NearestFilter,
-      magFilter: Three.NearestFilter,
-      type: Three.FloatType
-    })
-  }
-
-  allocateParticles () {
+  overwriteParticleScene () {
     const verticesBase = []
     for (let i = 0; i < this.particleModel_.numParticles; i++) {
       const x = i
@@ -50,14 +35,11 @@ export default class ParticleView {
 
   render (renderer) {
     this.updateUniforms()
-    renderer.render(this.bufScene_, this.bufCamera_, this.renderTarget_)
+    super.render(renderer)
   }
 
   updateUniforms () {
-    this.uniforms_.particleTexture.value = this.particleModel_.texture
-  }
-
-  get texture () {
-    return this.renderTarget_.texture
+    const uniforms = this.shaderMaterial_.uniforms
+    uniforms.particleTexture.value = this.particleModel_.texture
   }
 }
