@@ -10,3 +10,5 @@
 
 ## notice
 - The DataTexture uses the types THREE.FloatType. So the WebGL implementation must support the respective extensions OES_texture_float.
+- It seems that in fact rendering to floating point textures is the issue on iOS. Need to use HALF_FLOAT.
+https://github.com/yomboprime/GPGPU-threejs-demos/issues/5
