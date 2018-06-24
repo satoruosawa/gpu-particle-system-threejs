@@ -4,29 +4,34 @@ import vertexShader from '../../shader/particle-model-vertex.glsl'
 import fragmentShader from '../../shader/particle-model-fragment.glsl'
 
 export default class ParticleModel {
-  constructor (size) {
-    this.size = size
-    this.bufScene = new Three.Scene()
-    const geometry = new Three.PlaneBufferGeometry(size, size)
-    this.uniforms = {
+  constructor (textureSize) {
+    this.textureSize = textureSize
+    const geometry = new Three.PlaneBufferGeometry(textureSize, textureSize)
+    this.uniforms_ = {
       prevTexture: { type: 't', value: null },
-      textureSize: { type: 'i', value: size }
+      textureSize: { type: 'i', value: textureSize }
     }
-    const shaderMaterial = this.allocateShader()
+    const shader = {
+      uniforms: this.uniforms_,
+      vertexShader,
+      fragmentShader
+    }
+    const shaderMaterial = new Three.ShaderMaterial(shader)
     const mesh = new Three.Mesh(geometry, shaderMaterial)
-    this.bufScene.add(mesh)
-    this.bufCamera = new Three.Camera()
-    this.numRenderTargets = 2
-    this.renderTargetArray = []
-    this.renderTargetArray[0] = this.allocateRenderTarget(size)
-    this.renderTargetArray[1] = this.allocateRenderTarget(size)
-    this.renderTargetIndex = 0
+    this.bufScene_ = new Three.Scene()
+    this.bufScene_.add(mesh)
+    this.bufCamera_ = new Three.Camera()
+    this.numRenderTargets_ = 2
+    this.renderTargetArray_ = []
+    this.renderTargetArray_[0] = this.allocateRenderTarget(textureSize)
+    this.renderTargetArray_[1] = this.allocateRenderTarget(textureSize)
+    this.renderTargetIndex_ = 0
 
-    this.uniforms.prevTexture.value = this.allocateDataTexture()
+    this.uniforms_.prevTexture.value = this.allocateDataTexture(textureSize)
   }
 
-  allocateRenderTarget (size) {
-    return new Three.WebGLRenderTarget(size, size,
+  allocateRenderTarget (textureSize) {
+    return new Three.WebGLRenderTarget(textureSize, textureSize,
       {
         minFilter: Three.NearestFilter,
         magFilter: Three.NearestFilter,
@@ -34,17 +39,9 @@ export default class ParticleModel {
       })
   }
 
-  allocateShader () {
-    return new Three.ShaderMaterial({
-      uniforms: this.uniforms,
-      vertexShader,
-      fragmentShader
-    })
-  }
-
-  allocateDataTexture () {
-    const data = new Float32Array(this.size * this.size * 4)
-    for (let i = 0; i < this.size * this.size; i++) {
+  allocateDataTexture (textureSize) {
+    const data = new Float32Array(textureSize * textureSize * 4)
+    for (let i = 0; i < textureSize * textureSize; i++) {
       const index = i * 4
       data[index] = 0 // red
       data[index + 1] = 0 // green
@@ -53,39 +50,36 @@ export default class ParticleModel {
     }
     data[0] = 0
     data[2] = 0.002
-    const texture = new Three.DataTexture(data, this.size,
-      this.size, Three.RGBAFormat, Three.FloatType)
+    const texture = new Three.DataTexture(
+      data, textureSize, textureSize, Three.RGBAFormat, Three.FloatType
+    )
     texture.needsUpdate = true
     return texture
   }
 
   render (renderer) {
     this.shiftRenderTarget()
-    renderer.render(this.bufScene, this.bufCamera, this.renderTarget)
+    renderer.render(this.bufScene_, this.bufCamera_, this.renderTarget_)
     this.updateUniforms()
   }
 
   updateUniforms () {
-    this.uniforms.prevTexture.value = this.renderTarget.texture
+    this.uniforms_.prevTexture.value = this.renderTarget_.texture
   }
 
   shiftRenderTarget () {
-    this.renderTargetIndex++
-    if (this.renderTargetIndex >= this.numRenderTargets) {
-      this.renderTargetIndex = 0
+    this.renderTargetIndex_++
+    if (this.renderTargetIndex_ >= this.numRenderTargets_) {
+      this.renderTargetIndex_ = 0
     }
   }
 
-  get renderTarget () {
-    return this.renderTargetArray[this.renderTargetIndex]
+  get renderTarget_ () {
+    return this.renderTargetArray_[this.renderTargetIndex_]
   }
 
   get texture () {
-    return this.renderTarget.texture
-  }
-
-  get textureSize () {
-    return this.size
+    return this.renderTarget_.texture
   }
 
   get numParticles () {
