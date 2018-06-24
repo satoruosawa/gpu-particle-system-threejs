@@ -1,3 +1,5 @@
+#pragma glslify: calcBounceOfWalls = require("./calc_bounce_of_walls.glsl")
+
 uniform sampler2D prevTexture;
 uniform int textureSize;
 
@@ -9,5 +11,6 @@ void main() {
   vec2 velocity = data.zw;
   position += velocity;
 
-  gl_FragColor = vec4(position, velocity);
+  vec4 pass_data = calcBounceOfWalls(position, velocity, 1.0);
+  gl_FragColor = pass_data;
 }

@@ -14,5 +14,5 @@ void main(void)	{
   int particleId = int(position.x);
   vec2 pos = calcDataFromTexel(particleId).xy;
   gl_Position = vec4(pos.xy, 0.0, 1.0);
-  gl_PointSize = 10.0;
+  gl_PointSize = 1.0;
 }

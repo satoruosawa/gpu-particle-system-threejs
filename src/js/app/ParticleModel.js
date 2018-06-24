@@ -12,6 +12,7 @@ export default class ParticleModel extends TexturePass {
     }
     const shader = { uniforms, vertexShader, fragmentShader }
     super(textureSize, shader, { isMultipleRenderTargets: true })
+    this.numParticles = 10000 // should be less than textureSize * textureSize
     uniforms.prevTexture.value = this.allocateDataTexture(textureSize)
   }
 
@@ -19,13 +20,11 @@ export default class ParticleModel extends TexturePass {
     const data = new Float32Array(textureSize * textureSize * 4)
     for (let i = 0; i < textureSize * textureSize; i++) {
       const index = i * 4
-      data[index] = 0 // red
-      data[index + 1] = 0 // green
-      data[index + 2] = 0 // blue
-      data[index + 3] = 0 // alpha
+      data[index] = this.getRandomArbitrary(-1, 1) // red
+      data[index + 1] = this.getRandomArbitrary(-1, 1) // green
+      data[index + 2] = this.getRandomArbitrary(-0.002, 0.002) // blue
+      data[index + 3] = this.getRandomArbitrary(-0.002, 0.002) // alpha
     }
-    data[0] = 0
-    data[2] = 0.002
     const texture = new Three.DataTexture(
       data, textureSize, textureSize, Three.RGBAFormat, Three.FloatType
     )
@@ -33,6 +32,9 @@ export default class ParticleModel extends TexturePass {
     return texture
   }
 
+  getRandomArbitrary (min, max) {
+    return Math.random() * (max - min) + min
+  }
   render (renderer) {
     super.shiftRenderTarget()
     super.render(renderer)
@@ -42,9 +44,5 @@ export default class ParticleModel extends TexturePass {
   updateUniforms () {
     const uniforms = this.shaderMaterial_.uniforms
     uniforms.prevTexture.value = this.texture
-  }
-
-  get numParticles () {
-    return 1
   }
 }
