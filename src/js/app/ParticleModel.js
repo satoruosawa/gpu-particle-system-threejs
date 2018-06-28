@@ -13,7 +13,7 @@ export default class ParticleModel extends TexturePass {
     const shader = { uniforms, vertexShader, fragmentShader }
     super(textureSize, shader, { multipleRenderTargets: true })
     this.numParticles = numParticles
-    uniforms.prevTexture.value = this.allocateDataTexture(textureSize)
+    this.prevTexture_ = this.allocateDataTexture(textureSize)
   }
 
   allocateDataTexture (textureSize) {
@@ -48,13 +48,14 @@ export default class ParticleModel extends TexturePass {
     return Math.random() * (max - min) + min
   }
   render (renderer) {
+    this.updateUniforms()
     super.shiftRenderTarget()
     super.render(renderer)
-    this.updateUniforms()
+    this.prevTexture_ = this.texture
   }
 
   updateUniforms () {
     const uniforms = this.shaderMaterial_.uniforms
-    uniforms.prevTexture.value = this.texture
+    uniforms.prevTexture.value = this.prevTexture_
   }
 }
