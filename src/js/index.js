@@ -1,7 +1,16 @@
 import * as Three from 'three'
+import Controls from 'three-trackballcontrols'
+import Stats from 'stats-js'
 
 import App from './app/App'
 import '../css/index.scss'
+
+// stats
+const stats = new Stats()
+stats.domElement.style.position = 'absolute'
+stats.domElement.style.left = '0px'
+stats.domElement.style.top = '0px'
+document.body.appendChild(stats.domElement)
 
 // scene
 const scene = new Three.Scene()
@@ -27,11 +36,20 @@ if (!renderer.getContext().getExtension('OES_texture_float')) {
 const app = new App()
 scene.add(app.mesh)
 
+// controls
+const controls = new Controls(camera, renderer.domElement)
+controls.rotateSpeed = 5.0
+controls.zoomSpeed = 2.2
+controls.panSpeed = 1
+controls.dynamicDampingFactor = 0.3
+
 // animate
-const animate = function () {
+const animate = () => {
   window.requestAnimationFrame(animate)
+  controls.update()
   app.render(renderer)
   renderer.render(scene, camera)
+  stats.update()
 }
 
 animate()
