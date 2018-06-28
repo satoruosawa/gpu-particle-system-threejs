@@ -1,8 +1,7 @@
 import * as Three from 'three'
 
 const initialOptions = {
-  multipleRenderTargets: false,
-  transparent: false
+  multipleRenderTargets: false
 }
 
 export default class TexturePass {
@@ -10,7 +9,7 @@ export default class TexturePass {
     this.textureSize = textureSize
     this.options_ = Object.assign(initialOptions, options)
     const geometry = new Three.PlaneBufferGeometry(textureSize, textureSize)
-    this.shaderMaterial_ = this.allocateShader(shader)
+    this.shaderMaterial_ = new Three.ShaderMaterial(shader)
     const mesh = new Three.Mesh(geometry, this.shaderMaterial_)
     this.bufScene_ = new Three.Scene()
     this.bufScene_.add(mesh)
@@ -29,12 +28,6 @@ export default class TexturePass {
     if (this.currentTextureIndex_ >= 2) {
       this.currentTextureIndex_ = 0
     }
-  }
-
-  allocateShader (shader) {
-    return new Three.ShaderMaterial(Object.assign({
-      transparent: this.options_.transparent
-    }, shader))
   }
 
   allocateRenderTarget (textureSize) {

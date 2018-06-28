@@ -1,7 +1,15 @@
 import * as Three from 'three'
+import Stats from 'stats-js'
 
 import App from './app/App'
 import '../css/index.scss'
+
+const stats = new Stats()
+
+stats.domElement.style.position = 'absolute'
+stats.domElement.style.left = '0px'
+stats.domElement.style.top = '0px'
+document.body.appendChild(stats.domElement)
 
 // scene
 const scene = new Three.Scene()
@@ -28,10 +36,11 @@ const app = new App()
 scene.add(app.mesh)
 
 // animate
-const animate = function () {
+const animate = () => {
   window.requestAnimationFrame(animate)
   app.render(renderer)
   renderer.render(scene, camera)
+  stats.update()
 }
 
 animate()

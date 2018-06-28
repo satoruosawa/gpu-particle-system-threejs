@@ -32,7 +32,7 @@ export default class ParticleModel extends TexturePass {
     return texture
   }
 
-  allocateClearData(textureSize) {
+  allocateClearData (textureSize) {
     const data = new Float32Array(textureSize * textureSize * 4)
     for (let i = 0; i < textureSize * textureSize; i++) {
       const index = i * 4
