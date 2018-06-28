@@ -11,7 +11,7 @@ export default class ParticleView extends TexturePass {
       particleTextureSize: { type: 'i', value: particleModel.textureSize }
     }
     const shader = { uniforms, vertexShader, fragmentShader }
-    super(textureSize, shader)
+    super(textureSize, shader, { transparent: true })
     this.particleModel_ = particleModel
     this.overwriteParticleScene()
   }

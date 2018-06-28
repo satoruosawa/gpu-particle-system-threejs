@@ -10,7 +10,9 @@ export default class App {
     const material = new Three.MeshBasicMaterial()
     this.mesh = new Three.Mesh(geometry, material)
 
-    this.particleModel_ = new ParticleModel(textureSize)
+    const numParticles = 20000
+    const modelTextureSize = 128 // should be more than sqrt(numParticles)
+    this.particleModel_ = new ParticleModel(modelTextureSize, numParticles)
     this.particleView_ = new ParticleView(textureSize, this.particleModel_)
     material.map = this.particleView_.texture
   }

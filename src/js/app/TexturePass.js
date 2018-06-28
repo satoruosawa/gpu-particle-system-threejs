@@ -1,13 +1,16 @@
 import * as Three from 'three'
 
+const initialOptions = {
+  multipleRenderTargets: false,
+  transparent: false
+}
+
 export default class TexturePass {
   constructor (textureSize, shader, options = {}) {
     this.textureSize = textureSize
-    this.isMultipleRenderTargets_ =
-      typeof options.isMultipleRenderTargets !== 'undefined'
-        ? options.isMultipleRenderTargets : false
+    this.options_ = Object.assign(initialOptions, options)
     const geometry = new Three.PlaneBufferGeometry(textureSize, textureSize)
-    this.shaderMaterial_ = new Three.ShaderMaterial(shader)
+    this.shaderMaterial_ = this.allocateShader(shader)
     const mesh = new Three.Mesh(geometry, this.shaderMaterial_)
     this.bufScene_ = new Three.Scene()
     this.bufScene_.add(mesh)
@@ -15,17 +18,23 @@ export default class TexturePass {
     this.renderTargets_ = []
     this.currentTextureIndex_ = 0
     this.renderTargets_[0] = this.allocateRenderTarget(textureSize)
-    if (this.isMultipleRenderTargets_) {
+    if (this.options_.multipleRenderTargets) {
       this.renderTargets_[1] = this.allocateRenderTarget(textureSize)
     }
   }
 
   shiftRenderTarget () {
-    if (!this.isMultipleRenderTargets_) return
+    if (!this.options_.multipleRenderTargets) return
     this.currentTextureIndex_++
     if (this.currentTextureIndex_ >= 2) {
       this.currentTextureIndex_ = 0
     }
+  }
+
+  allocateShader (shader) {
+    return new Three.ShaderMaterial(Object.assign({
+      transparent: this.options_.transparent
+    }, shader))
   }
 
   allocateRenderTarget (textureSize) {
