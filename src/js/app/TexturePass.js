@@ -8,11 +8,8 @@ export default class TexturePass {
   constructor (textureSize, shader, options = {}) {
     this.textureSize = textureSize
     this.options_ = Object.assign(initialOptions, options)
-    const geometry = new Three.PlaneBufferGeometry(textureSize, textureSize)
     this.shaderMaterial_ = new Three.ShaderMaterial(shader)
-    const mesh = new Three.Mesh(geometry, this.shaderMaterial_)
     this.bufScene_ = new Three.Scene()
-    this.bufScene_.add(mesh)
     this.bufCamera_ = new Three.Camera()
     this.renderTargets_ = []
     this.currentTextureIndex_ = 0
@@ -20,6 +17,11 @@ export default class TexturePass {
     if (this.options_.multipleRenderTargets) {
       this.renderTargets_[1] = this.allocateRenderTarget(textureSize)
     }
+  }
+
+  allocateMesh (textureSize, material) {
+    const geometry = new Three.PlaneBufferGeometry(textureSize, textureSize)
+    return new Three.Mesh(geometry, material)
   }
 
   shiftRenderTarget () {
@@ -36,18 +38,6 @@ export default class TexturePass {
       magFilter: Three.NearestFilter,
       type: Three.FloatType
     })
-  }
-
-  allocateClearData (textureSize) {
-    const data = new Float32Array(textureSize * textureSize * 4)
-    for (let i = 0; i < textureSize * textureSize; i++) {
-      const index = i * 4
-      data[index] = 0 // red
-      data[index + 1] = 0 // green
-      data[index + 2] = 0 // blue
-      data[index + 3] = 0 // alpha
-    }
-    return data
   }
 
   render (renderer) {

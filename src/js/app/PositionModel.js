@@ -14,13 +14,14 @@ export default class PositionModel extends TexturePass {
     }
     const shader = { uniforms, vertexShader, fragmentShader }
     super(textureSize, shader, { multipleRenderTargets: true })
+    this.bufScene_.add(this.allocateMesh(textureSize, this.shaderMaterial_))
     this.numParticles = numParticles
     this.prevPositionTexture_ = this.allocatePositionTexture(textureSize)
     this.velocityModel = null
   }
 
   allocatePositionTexture (textureSize) {
-    const data = this.allocateClearData(textureSize)
+    const data = new Float32Array(textureSize * textureSize * 4).fill(0)
     for (let i = 0; i < this.numParticles; i++) {
       const index = i * 4
       data[index] = Random.arbitrary(-1, 1) // x

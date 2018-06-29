@@ -1,5 +1,3 @@
-import * as Three from 'three'
-
 import VelocityModel from './VelocityModel'
 import PositionModel from './PositionModel'
 
@@ -24,7 +22,7 @@ export default class ParticleModel {
     return this.positionModel_.textureSize
   }
 
-  get numParticles() {
+  get numParticles () {
     return this.positionModel_.numParticles
   }
 }

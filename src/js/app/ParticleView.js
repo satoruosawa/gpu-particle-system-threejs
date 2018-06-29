@@ -17,34 +17,33 @@ export default class ParticleView extends TexturePass {
       fragmentShader
     }
     super(textureSize, shader)
-    this.bufCamera_ = new Three.PerspectiveCamera(30, 1, 0.01, 200)
-    this.bufCamera_.position.z = 2
-
+    this.bufScene_.add(
+      this.allocatePoints(particleModel.numParticles, this.shaderMaterial_)
+    )
     this.particleModel_ = particleModel
-    this.overwriteParticleScene()
+    this.bufCamera_ = new Three.PerspectiveCamera(30, 1, 0.01, 200)
+    this.bufCamera_.position.z = 1
   }
 
-  overwriteParticleScene () {
-    const verticesBase = []
-    for (let i = 0; i < this.particleModel_.numParticles; i++) {
-      const x = i
-      const y = 0
-      const z = 0
-      verticesBase.push(x, y, z)
+  allocatePoints (numPoints, material) {
+    const data = new Float32Array(numPoints * 3).fill(0)
+    for (let i = 0; i < numPoints; i++) {
+      const index = i * 3
+      data[index] = i // x
+      data[index + 1] = 0 // y
+      data[index + 2] = 0 // z
     }
-    const vertices = new Float32Array(verticesBase)
     const geometry = new Three.BufferGeometry()
-    geometry.addAttribute('position', new Three.BufferAttribute(vertices, 3))
-    const points = new Three.Points(geometry, this.shaderMaterial_)
+    geometry.addAttribute('position', new Three.BufferAttribute(data, 3))
+    const points = new Three.Points(geometry, material)
     points.matrixAutoUpdate = true
-    this.bufScene_ = new Three.Scene()
-    this.bufScene_.add(points)
+    return points
   }
 
   render (renderer) {
+    this.bufScene_.rotation.x += 0.001
+    this.bufScene_.rotation.z += 0.001
     this.updateUniforms()
-    this.bufScene_.rotation.x -= 0.001
-    this.bufScene_.rotation.z -= 0.001
     super.render(renderer)
   }
 
