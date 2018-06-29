@@ -38,6 +38,18 @@ export default class TexturePass {
     })
   }
 
+  allocateClearData (textureSize) {
+    const data = new Float32Array(textureSize * textureSize * 4)
+    for (let i = 0; i < textureSize * textureSize; i++) {
+      const index = i * 4
+      data[index] = 0 // red
+      data[index + 1] = 0 // green
+      data[index + 2] = 0 // blue
+      data[index + 3] = 0 // alpha
+    }
+    return data
+  }
+
   render (renderer) {
     renderer.render(this.bufScene_, this.bufCamera_, this.renderTarget_)
   }

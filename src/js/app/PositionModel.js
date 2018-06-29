@@ -3,6 +3,7 @@ import * as Three from 'three'
 import TexturePass from './TexturePass'
 import vertexShader from '../../shader/position-model-vertex.glsl'
 import fragmentShader from '../../shader/position-model-fragment.glsl'
+import * as Random from '../module/Random'
 
 export default class PositionModel extends TexturePass {
   constructor (textureSize, numParticles) {
@@ -22,9 +23,9 @@ export default class PositionModel extends TexturePass {
     const data = this.allocateClearData(textureSize)
     for (let i = 0; i < this.numParticles; i++) {
       const index = i * 4
-      data[index] = this.getRandomArbitrary(-1, 1) // x
-      data[index + 1] = this.getRandomArbitrary(-1, 1) // y
-      data[index + 2] = this.getRandomArbitrary(-1, 1) // z
+      data[index] = Random.arbitrary(-1, 1) // x
+      data[index + 1] = Random.arbitrary(-1, 1) // y
+      data[index + 2] = Random.arbitrary(-1, 1) // z
       data[index + 3] = 0
     }
     const texture = new Three.DataTexture(
@@ -32,22 +33,6 @@ export default class PositionModel extends TexturePass {
     )
     texture.needsUpdate = true
     return texture
-  }
-
-  allocateClearData (textureSize) {
-    const data = new Float32Array(textureSize * textureSize * 4)
-    for (let i = 0; i < textureSize * textureSize; i++) {
-      const index = i * 4
-      data[index] = 0 // red
-      data[index + 1] = 0 // green
-      data[index + 2] = 0 // blue
-      data[index + 3] = 0 // alpha
-    }
-    return data
-  }
-
-  getRandomArbitrary (min, max) {
-    return Math.random() * (max - min) + min
   }
 
   render (renderer) {
