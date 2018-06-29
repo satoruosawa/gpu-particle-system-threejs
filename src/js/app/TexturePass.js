@@ -5,7 +5,7 @@ const initialOptions = {
 }
 
 export default class TexturePass {
-  constructor (textureSize, shader, options = {}) {
+  constructor (shader, textureSize = { width: 1, height: 1 }, options = {}) {
     this.textureSize = textureSize
     this.options_ = Object.assign(initialOptions, options)
     this.shaderMaterial_ = new Three.ShaderMaterial(shader)
@@ -20,7 +20,9 @@ export default class TexturePass {
   }
 
   allocateMesh (textureSize, material) {
-    const geometry = new Three.PlaneBufferGeometry(textureSize, textureSize)
+    const geometry = new Three.PlaneBufferGeometry(
+      textureSize.width, textureSize.height
+    )
     return new Three.Mesh(geometry, material)
   }
 
@@ -33,7 +35,7 @@ export default class TexturePass {
   }
 
   allocateRenderTarget (textureSize) {
-    return new Three.WebGLRenderTarget(textureSize, textureSize, {
+    return new Three.WebGLRenderTarget(textureSize.width, textureSize.height, {
       minFilter: Three.NearestFilter,
       magFilter: Three.NearestFilter,
       type: Three.FloatType

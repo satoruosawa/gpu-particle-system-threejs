@@ -5,21 +5,16 @@ import ParticleView from './ParticleView'
 
 export default class App {
   constructor () {
-    const textureSize = 512
-    const geometry = new Three.PlaneGeometry(textureSize, textureSize)
-    const material = new Three.MeshBasicMaterial()
-    this.mesh = new Three.Mesh(geometry, material)
-
     const numParticles = 15000
-    const modelTextureSize = 128 // should be more than sqrt(numParticles)
+    const modelTextureSize = { width: 128, height: 128 } // should be more than sqrt(numParticles)
     this.particleModel_ = new ParticleModel(modelTextureSize, numParticles)
-    this.particleView_ = new ParticleView(textureSize, this.particleModel_)
-    material.map = this.particleView_.texture
+    this.particleView_ = new ParticleView(this.particleModel_)
   }
 
   render (renderer) {
     this.particleModel_.render(renderer)
     this.particleView_.render(renderer)
+    renderer.render(this.particleView_.scene, this.particleView_.bufCamera)
   }
 
   get bufCamera () {

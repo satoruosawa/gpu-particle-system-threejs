@@ -7,13 +7,16 @@ import * as Random from '../module/Random'
 
 export default class PositionModel extends TexturePass {
   constructor (textureSize, numParticles) {
+    if (textureSize.width !== textureSize.height) {
+      window.alert('textureSize width should be equal height')
+    }
     const uniforms = {
       prevVelocityTexture: { type: 't', value: null },
       prevPositionTexture: { type: 't', value: null },
-      textureSize: { type: 'i', value: textureSize }
+      textureSize: { type: 'i', value: textureSize.width }
     }
     const shader = { uniforms, vertexShader, fragmentShader }
-    super(textureSize, shader, { multipleRenderTargets: true })
+    super(shader, textureSize, { multipleRenderTargets: true })
     this.bufScene_.add(this.allocateMesh(textureSize, this.shaderMaterial_))
     this.numParticles = numParticles
     this.prevPositionTexture_ = this.allocatePositionTexture(textureSize)
@@ -21,7 +24,8 @@ export default class PositionModel extends TexturePass {
   }
 
   allocatePositionTexture (textureSize) {
-    const data = new Float32Array(textureSize * textureSize * 4).fill(0)
+    const data = new Float32Array(textureSize.width * textureSize.height * 4)
+      .fill(0)
     for (let i = 0; i < this.numParticles; i++) {
       const index = i * 4
       data[index] = Random.arbitrary(-1, 1) // x
@@ -30,7 +34,8 @@ export default class PositionModel extends TexturePass {
       data[index + 3] = 0
     }
     const texture = new Three.DataTexture(
-      data, textureSize, textureSize, Three.RGBAFormat, Three.FloatType
+      data, textureSize.width, textureSize.height,
+      Three.RGBAFormat, Three.FloatType
     )
     texture.needsUpdate = true
     return texture

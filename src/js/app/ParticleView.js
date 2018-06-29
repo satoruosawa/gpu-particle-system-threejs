@@ -5,10 +5,10 @@ import vertexShader from '../../shader/particle-view-vertex.glsl'
 import fragmentShader from '../../shader/particle-view-fragment.glsl'
 
 export default class ParticleView extends TexturePass {
-  constructor (textureSize, particleModel) {
+  constructor (particleModel) {
     const uniforms = {
       particleTexture: { type: 't', value: particleModel.texture },
-      particleTextureSize: { type: 'i', value: particleModel.textureSize }
+      particleTextureSize: { type: 'i', value: particleModel.textureSize.width }
     }
     const shader = {
       transparent: true,
@@ -16,12 +16,14 @@ export default class ParticleView extends TexturePass {
       vertexShader,
       fragmentShader
     }
-    super(textureSize, shader)
+    super(shader)
     this.bufScene_.add(
       this.allocatePoints(particleModel.numParticles, this.shaderMaterial_)
     )
     this.particleModel_ = particleModel
-    this.bufCamera_ = new Three.PerspectiveCamera(30, 1, 0.01, 200)
+    this.bufCamera_ = new Three.PerspectiveCamera(
+      30, window.innerWidth / window.innerHeight, 0.01, 200
+    )
     this.bufCamera_.position.z = 1
   }
 
@@ -54,5 +56,9 @@ export default class ParticleView extends TexturePass {
 
   get bufCamera () {
     return this.bufCamera_
+  }
+
+  get scene () {
+    return this.bufScene_
   }
 }
