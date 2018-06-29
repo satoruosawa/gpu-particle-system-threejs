@@ -12,7 +12,8 @@ vec4 calcDataFromTexel(int id) {
 
 void main(void)	{
   int particleId = int(position.x);
-  vec2 pos = calcDataFromTexel(particleId).xy;
-  gl_Position = vec4(pos.xy, 0.0, 1.0);
+  vec3 position = calcDataFromTexel(particleId).xyz;
+  vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+  gl_Position = projectionMatrix * mvPosition;
   gl_PointSize = 1.0;
 }

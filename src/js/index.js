@@ -37,7 +37,7 @@ const app = new App()
 scene.add(app.mesh)
 
 // controls
-const controls = new Controls(camera, renderer.domElement)
+const controls = new Controls(app.bufCamera, renderer.domElement)
 controls.rotateSpeed = 5.0
 controls.zoomSpeed = 2.2
 controls.panSpeed = 1

@@ -21,4 +21,8 @@ export default class App {
     this.particleModel_.render(renderer)
     this.particleView_.render(renderer)
   }
+
+  get bufCamera () {
+    return this.particleView_.bufCamera
+  }
 }
